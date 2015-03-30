@@ -3,9 +3,14 @@
 	
 	var simpleGames = function() {
 		/* === TO DO LIST ===
-			$util.ajax
-				- 진짜 json으로 주고받을 수 있게 변경(문자열 파싱방법)
-			scrolling
+			> Client
+				- scrolling
+
+			> Server
+				- policy making & develop
+					1) request & response
+					2) picture & video upload/download
+					3) logging
 		*/
 
 		var container  = $layer( 'container' ),

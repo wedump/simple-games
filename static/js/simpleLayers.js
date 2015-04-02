@@ -35,7 +35,7 @@ var $layer = ( function() {
 			return this;
 		},
 
-		goal : function( $x, $y ) {
+		scale : function( $x, $y ) {
 			this._g_position.x = $x;
 			this._g_position.y = $y;
 

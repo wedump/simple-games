@@ -1,10 +1,6 @@
-#!/Library/Frameworks/Python.framework/Versions/3.4/bin/python3
+#!/usr/bin/python3
 
-import cgi
-import json
-import sys
-import os
-import urllib.parse
+import cgi, json, sys, os, urllib.parse
 
 method = os.environ.get( 'REQUEST_METHOD' )
 

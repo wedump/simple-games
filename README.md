@@ -3,7 +3,7 @@
 ## Server Side
     1. Router
       - WSGI middle ware
-      - Request, Response
+      - Request, Response -> completed
 
     2. Stress test
       - Use python web client

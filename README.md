@@ -2,8 +2,7 @@
 
 ## Server Side
     1. Router
-      - WSGI middle ware
-      - Request, Response -> completed
+      - Clean up static process
 
     2. Stress test
       - Use python web client

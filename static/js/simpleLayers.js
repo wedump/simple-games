@@ -43,15 +43,19 @@ var $layer = ( function() {
 		},
 
 		move : function() {
-			var cellWidth  = $util.number( this.parent.style().width )  / this.parent._intervalX,
+			var cellWidth, cellHeight;
+
+			if ( this.parent ) {
+				cellWidth  = $util.number( this.parent.style().width )  / this.parent._intervalX;
 				cellHeight = $util.number( this.parent.style().height ) / this.parent._intervalY;
 
-			$util.style( this.element, {
-				'left'	 : this._s_position.x * cellWidth  + 'px',
-				'top'	 : this._s_position.y * cellHeight + 'px',
-				'width'  : this._g_position.x * cellWidth  - $util.number( this.style().borderRightWidth  ) * 2 + 'px',
-				'height' : this._g_position.y * cellHeight - $util.number( this.style().borderBottomWidth ) * 2 + 'px'
-			} );
+				$util.style( this.element, {
+					'left'	 : this._s_position.x * cellWidth  + 'px',
+					'top'	 : this._s_position.y * cellHeight + 'px',
+					'width'  : this._g_position.x * cellWidth  - $util.number( this.style().borderRightWidth  ) * 2 + 'px',
+					'height' : this._g_position.y * cellHeight - $util.number( this.style().borderBottomWidth ) * 2 + 'px'
+				} );
+			}
 
 			this.label();
 			for ( var i in this.children ) this.children[ i ].move();
@@ -62,7 +66,7 @@ var $layer = ( function() {
 		style : function( $styles ) {
 			if ( $styles ) { // setter
 				$util.style( this.element, $styles );
-				if ( this.parent ) this.move();
+				this.move();
 				return this;
 			}
 			

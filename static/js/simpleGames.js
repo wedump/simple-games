@@ -7,11 +7,16 @@
 			menuLayer  = $layer().start( 0, 9 ).scale( 10, 1 ),
 			innerLayer = $layer().start( 0, 2 ).scale( 10, 8 );
 
-		container.style( {
-			'border' : '5px solid red',
-			'width'  : document.documentElement.clientWidth  - 10 + 'px',
-			'height' : document.documentElement.clientHeight - 10 + 'px'
-		} );
+		function containerResize() {
+			container.style( {
+				'border' : '5px solid red',
+				'width'  : document.documentElement.clientWidth  - 10 + 'px',
+				'height' : document.documentElement.clientHeight - 10 + 'px'
+			} );
+		}
+
+		containerResize();
+		window.addEventListener( 'resize', function() { containerResize(); }, false );
 		
 		mainLayer.style( { 'border' : '5px solid blue' } );
 		menuLayer.style( { 'border' : '5px solid green' } );
@@ -25,22 +30,14 @@
 				mainLayer.in( $layer().start( j + 1 + 4 * j, i + 1 + 2 * i).scale( 4, 2 ).shape( 'rounded' ).style( { 'border' : '5px solid gray' } ).label( 'game' + i + j, '14px' ) );
 
 		$util.ajax( 'test', 'POST', { 'a' : 1, 'b' : 2, 'c' : 3 }, function( $result ) { alert( $result.message + '[' + $result.code + ']' ); console.log( $result ); } );
+
+		
 	};
 
-	var completedDOM = function( $event ) {
-		if ( document.addEventListener ) {
-			document.removeEventListener( 'DOMContentLoaded', completedDOM, false );
-			simpleGames();
-		} else { // IE
-			if ( document.readyState === 'complete' ) {
-				document.detachEvent( 'onreadystatechange', completedDOM );
-				simpleGames();
-			}
-		}
+	var completedDOM = function() {
+		document.removeEventListener( 'DOMContentLoaded', completedDOM, false );
+		simpleGames();
 	};
-	
-	if ( document.addEventListener )
-		document.addEventListener( 'DOMContentLoaded', completedDOM, false );
-	else
-		document.attachEvent( 'onreadystatechange', completedDOM );	
+
+	document.addEventListener( 'DOMContentLoaded', completedDOM, false );
 } )();

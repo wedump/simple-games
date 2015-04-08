@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-import json, simple_router
+import json, urllib.parse, simple_router
 from wsgiref.simple_server import make_server, WSGIServer, WSGIRequestHandler
+
+encoding = 'utf-8'
 
 class SimpleRequestHandler( WSGIRequestHandler ):
 	def get_environ( self ):
@@ -13,7 +15,9 @@ class SimpleRequestHandler( WSGIRequestHandler ):
 				if item: request_payload[ item.split( '=' )[ 0 ] ] = item.split( '=' )[ 1 ]
 		elif self.command == 'POST':
 			length = int( self.headers.get( 'content-length' ) )
-			if length > 0: request_payload = json.loads( self.rfile.read( length ).decode( 'utf-8' ) )
+			
+			if length > 0:
+				request_payload = json.loads( urllib.parse.unquote( self.rfile.read( length ).decode( encoding ) ) )
 
 		environ[ 'REQUEST_PAYLOAD' ] = request_payload
 

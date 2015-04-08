@@ -24,7 +24,7 @@
 			for ( var j = 0; j < 4; j++ )
 				mainLayer.in( $layer().start( j + 1 + 4 * j, i + 1 + 2 * i).scale( 4, 2 ).shape( 'rounded' ).style( { 'border' : '5px solid gray' } ).label( 'game' + i + j, '14px' ) );
 
-		$util.ajax( 'cgi-bin/ajax_test.py', 'POST', { 'a' : 1, 'b' : 2, 'c' : 3 }, function( $result ) { alert( $result.message + '[' + $result.code + ']' ); console.log( $result ); } );
+		$util.ajax( 'test', 'POST', { 'a' : 1, 'b' : 2, 'c' : 3 }, function( $result ) { alert( $result.message + '[' + $result.code + ']' ); console.log( $result ); } );
 	};
 
 	var completedDOM = function( $event ) {

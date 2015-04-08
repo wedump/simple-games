@@ -57,7 +57,7 @@ var $util = ( function() {
 				};
 
 			if ( $parameters ) {
-				$parameters = encodeURIComponent( JSON.stringify( $parameters ) );
+				$parameters = encodeURIComponent( JSON.stringify( $parameters ) );				
 				if ( $method === "GET" ) $url += "?parameters=" + $parameters;
 			}
 

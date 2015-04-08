@@ -1,4 +1,7 @@
 #!/usr/bin/python3
 
+import json
+
 def process( request, response ):
-	response.write( 'hello world' )
+	result = { 'code' : 0, 'message' : 'success' }
+	response.write( json.dumps( result ) )

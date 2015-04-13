@@ -2,9 +2,12 @@
 
 ## Server Side
     1. Stress test
-      - Use python web client
 
-    2. Logging
+    2. File upload / download
+
+    3. Dababase
+
+    4. Logging
 
 ## Client Side
     1. Scrolling

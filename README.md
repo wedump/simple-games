@@ -1,13 +1,11 @@
 # TO DO LIST
 
 ## Server Side
-    1. Stress test
+    1. File upload / download
 
-    2. File upload / download
+    2. Dababase
 
-    3. Dababase
-
-    4. Logging
+    3. Logging
 
 ## Client Side
     1. Scrolling

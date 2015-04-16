@@ -3,6 +3,7 @@
 import os, time
 from io import StringIO
 from importlib import import_module
+import sys
 
 base_package = 'cgi-bin'
 default_page = 'index.html'
@@ -33,7 +34,7 @@ def route( environ, start_response ):
 	stdout = StringIO()
 	path = environ.get( 'PATH_INFO' )[ 1: ] or default_page
 	extension = path[ path.rfind( '.' ) + 1: ]
-	
+
 	if extension in extensions_map.keys():
 		return do_static( path, extension, start_response )
 

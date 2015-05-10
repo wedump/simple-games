@@ -5,7 +5,7 @@
 		var container  = $layer( 'container' ),
 			mainLayer  = $layer(),
 			menuLayer  = $layer(),
-			innerLayer = $layer().start( 0, 2 ).scale( 10, 8 );
+			innerLayer = $layer();
 
 		function resizeContainer() {
 			var clientWidth  = document.documentElement.clientWidth,
@@ -45,7 +45,7 @@
 				wIconBlank = ( mainLayerWidth - ( iconBlockSize * wIconCount - iconMargin ) ) / 2,
 				hIconBlank = ( mainLayerHeight - ( ( iconBlockSize + h_correct_margin + labelSize ) * hIconCount - ( iconMargin + h_correct_margin ) ) ) / 2;
 				
-			for ( var i = mainLayer.element.children.length - 1; i >= 2; i-- )
+			for ( var i = mainLayer.element.children.length - 1; i >= 1; i-- )
 				mainLayer.element.removeChild(  mainLayer.element.children[ i ] );
 
 			mainLayer.children.splice( 1 );
@@ -61,18 +61,47 @@
 						mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + h_correct_margin + labelSize ) + hIconBlank )
 											  .shape( 'rounded' )
 											  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
-											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' ) );
+											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
+											  .event( 'click', onClickIcon ) );
 
 						if ( page === totalPage - 1 && w === wIconCount - 1 )
 							$util.style( mainLayer.children[ mainLayer.children.length - 1 ].element.querySelector( 'label' ), { 'width' : iconSize + wIconBlank + iconBorder / 2 + 'px', 'text-align' : 'left' } );
 					}
 		}
 
+		function onClickIcon( $event ) {
+			innerLayer.start( 0, 4 ).scale( 10, 5 ).show().move();
+			mainLayer.start( 0, 0 ).scale( 10, 4 ).move();
+			deployIcon();
+		}
+
 		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
 		menuLayer.style( { 'border' : '5px solid green' } );
 		innerLayer.style( { 'border' : '5px solid brown' } );
+/*
+		var s_time;
+		var s_position;
 
-		container.in( mainLayer.in( innerLayer.hide() ) ).in( menuLayer );
+		mainLayer.event( 'touchstart', function( $event ) {
+			s_time = $event.timeStamp;
+			s_position = $event.touches[ 0 ].pageX;
+		} );
+
+		mainLayer.event( 'touchend', function( $event ) {
+			var mainLayerWidth = $util.number( mainLayer.style().width );
+			
+			if ( s_time && $event.timeStamp - s_time <= 500 )
+				mainLayer.element.scrollLeft = Math.ceil( mainLayer.element.scrollLeft / mainLayerWidth ) * mainLayerWidth;
+			else
+				mainLayer.element.scrollLeft = Math.round( mainLayer.element.scrollLeft / mainLayerWidth ) * mainLayerWidth;
+		} );
+
+		mainLayer.event( 'touchmove', function( $event ) {
+			$event.preventDefault();			
+			mainLayer.element.scrollLeft = mainLayer.element.scrollLeft + ( s_position - $event.touches[ 0 ].pageX) / 8;
+		} );
+*/
+		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );		
 		window.addEventListener( 'resize', function() { resizeContainer(); }, false );
 		resizeContainer();
 

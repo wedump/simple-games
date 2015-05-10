@@ -39,7 +39,7 @@ var $util = ( function() {
 		},
 
 		fn : function( $fn, $context, $parameters ) {
-			return function( $addParams ) {				
+			return function( $addParams ) {
 				$fn.apply( $context, $addParams ? $parameters.concat( $addParams ) : $parameters );
 			};
 		},

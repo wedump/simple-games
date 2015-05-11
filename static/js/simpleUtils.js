@@ -65,6 +65,23 @@ var $util = ( function() {
 			httpRequest.setRequestHeader( 'Content-Type', 'application/json' );
 			httpRequest.onreadystatechange = callback;
 			httpRequest.send( $parameters && $method === "POST" ? $parameters : null );
+		},
+
+		clientSize : function() {
+			return {
+				'width'  : document.documentElement.clientWidth,
+				'height' : document.documentElement.clientHeight
+			};
+		},
+
+		hash : function( $value ) {
+			if ( $value ) {
+				location.hash = '#' + $value;
+				location.hash = '';
+				return;
+			}
+
+			return location.hash;
 		}
 	};
 } )();

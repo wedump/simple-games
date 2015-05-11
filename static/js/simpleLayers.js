@@ -130,6 +130,10 @@ var $layer = ( function() {
 			return this;
 		},
 
+		visible : function() {
+			return this.style().display === 'none' ? false : true;
+		},
+
 		event : function( $type, $callback ) {
 			if ( this.element.addEventListener )
 				this.element.addEventListener( $type, $callback, false );

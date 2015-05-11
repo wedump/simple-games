@@ -1,8 +1,16 @@
 ( function() {
 	'use strict';
 	
+	/**
+		1. 아이콘 사이즈 관리(글로벌)
+		2. 유틸함수 $util로 이주
+		3. onClickIcon에 인자로 layer를 받아 다른 타입 아이콘별로 다른 화면 출력할 수 있도록 수정
+		4. 입력 팝업 만들고, 서버 저장 개발
+	**/
+
 	var simpleGames = function() {
-		var container  = $layer( 'container' ),
+		var currentHash,
+			container  = $layer( 'container' ),
 			mainLayer  = $layer(),
 			menuLayer  = $layer(),
 			innerLayer = $layer();
@@ -12,10 +20,20 @@
 				clientHeight = document.documentElement.clientHeight;
 
 			if ( clientWidth > clientHeight ) {
-				mainLayer.start( 0, 0 ).scale( 9, 10 );
-				menuLayer.start( 9, 0 ).scale( 1, 10 );
+				if ( innerLayer.visible() )
+					mainLayer.start( 0, 0 ).scale( 4, 10 );
+				else
+					mainLayer.start( 0, 0 ).scale( 9, 10 );
+
+				innerLayer.start( 4, 0 ).scale( 5, 10 );
+				menuLayer.start( 9, 0 ).scale( 1, 10 );				
 			} else {
-				mainLayer.start( 0, 0 ).scale( 10, 9 );
+				if ( innerLayer.visible() )
+					mainLayer.start( 0, 0 ).scale( 10, 4 );
+				else
+					mainLayer.start( 0, 0 ).scale( 10, 9 );
+
+				innerLayer.start( 0, 4 ).scale( 10, 5 );
 				menuLayer.start( 0, 9 ).scale( 10, 1 );
 			}
 
@@ -58,11 +76,15 @@
 						if ( !data[ page * iconCountPerPage + h * wIconCount + w ] )
 							break roof;
 
-						mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + h_correct_margin + labelSize ) + hIconBlank )
-											  .shape( 'rounded' )
-											  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
-											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
-											  .event( 'click', onClickIcon ) );
+						var icon = $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + h_correct_margin + labelSize ) + hIconBlank )
+										   .shape( 'rounded' )
+										   .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
+										   .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
+										   .event( 'click', onClickIcon );
+
+						icon.element.id = icon._label.childNodes[ 0 ].nodeValue;
+
+						mainLayer.in( icon );
 
 						if ( page === totalPage - 1 && w === wIconCount - 1 )
 							$util.style( mainLayer.children[ mainLayer.children.length - 1 ].element.querySelector( 'label' ), { 'width' : iconSize + wIconBlank + iconBorder / 2 + 'px', 'text-align' : 'left' } );
@@ -70,9 +92,21 @@
 		}
 
 		function onClickIcon( $event ) {
-			innerLayer.start( 0, 4 ).scale( 10, 5 ).show().move();
-			mainLayer.start( 0, 0 ).scale( 10, 4 ).move();
-			deployIcon();
+			var isVisible = innerLayer.visible(),
+				scrollLeft = mainLayer.element.scrollLeft;
+
+			innerLayer.show();
+			resizeContainer();
+
+			currentHash = '#' + $event.target.id;
+
+			if ( isVisible ) {
+				mainLayer.element.scrollLeft = scrollLeft;
+			} else {
+				location.hash = currentHash;
+				location.hash = '';
+				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - 30;
+			}
 		}
 
 		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
@@ -101,8 +135,17 @@
 			mainLayer.element.scrollLeft = mainLayer.element.scrollLeft + ( s_position - $event.touches[ 0 ].pageX) / 8;
 		} );
 */
-		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );		
-		window.addEventListener( 'resize', function() { resizeContainer(); }, false );
+		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );
+
+		window.addEventListener( 'resize', function() {
+			resizeContainer();
+
+			if ( currentHash ) {
+				location.hash = currentHash; location.hash = '';
+				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - 30;
+			}
+		}, false );
+
 		resizeContainer();
 
 		// $util.ajax( 'test', 'POST', { 'a' : 1, 'b' : 2, 'c' : 3 }, function( $result ) { alert( $result.message + '[' + $result.code + ']' ); console.log( $result ); } );

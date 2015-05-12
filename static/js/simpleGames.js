@@ -62,6 +62,7 @@
 		}
 
 		function deployIcon() {
+			// test data
 			var data = [
 				'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28',
 				'29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53'
@@ -76,11 +77,8 @@
 				totalPage = Math.ceil( data.length / iconCountPerPage ),
 				wIconBlank = ( mainLayerWidth - ( iconBlockSize * wIconCount - iconMargin ) ) / 2,
 				hIconBlank = ( mainLayerHeight - ( ( iconBlockSize + hCorrectMargin + labelSize ) * hIconCount - ( iconMargin + hCorrectMargin ) ) ) / 2;
-				
-			for ( var i = mainLayer.element.children.length - 1; i >= 1; i-- )
-				mainLayer.element.removeChild(  mainLayer.element.children[ i ] );
-
-			mainLayer.children.splice( 1 );
+			
+			mainLayer.out( mainLayer.children );
 			mainLayer.interval( mainLayerWidth, mainLayerHeight );
 
 			roof:
@@ -109,6 +107,8 @@
 			var isVisible = innerLayer.visible(),
 				scrollLeft = mainLayer.element.scrollLeft;
 
+			currentIcon = $event.target.id;
+
 			innerLayer.in( $contents.show() );
 			innerLayer.show();
 			resizeContainer();
@@ -116,41 +116,10 @@
 			if ( isVisible ) {
 				mainLayer.element.scrollLeft = scrollLeft;
 			} else {
-				$util.hash( currentIcon = $event.target.id );
+				$util.hash( currentIcon );
 				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - ( iconSize + iconBorder ) / 2;
 			}
 		}
-
-		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
-		menuLayer.style( { 'border' : '5px solid green' } );
-		innerLayer.style( { 'border' : '5px solid brown' } );
-		view.style( { 'border': '5px solid yellow' } );
-		add.style( { 'border': '5px solid hotpink' } );
-
-/*
-		var s_time;
-		var s_position;
-
-		mainLayer.event( 'touchstart', function( $event ) {
-			s_time = $event.timeStamp;
-			s_position = $event.touches[ 0 ].pageX;
-		} );
-
-		mainLayer.event( 'touchend', function( $event ) {
-			var mainLayerWidth = $util.number( mainLayer.style().width );
-			
-			if ( s_time && $event.timeStamp - s_time <= 500 )
-				mainLayer.element.scrollLeft = Math.ceil( mainLayer.element.scrollLeft / mainLayerWidth ) * mainLayerWidth;
-			else
-				mainLayer.element.scrollLeft = Math.round( mainLayer.element.scrollLeft / mainLayerWidth ) * mainLayerWidth;
-		} );
-
-		mainLayer.event( 'touchmove', function( $event ) {
-			$event.preventDefault();			
-			mainLayer.element.scrollLeft = mainLayer.element.scrollLeft + ( s_position - $event.touches[ 0 ].pageX) / 8;
-		} );
-*/
-		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );
 
 		window.addEventListener( 'resize', function() {
 			resizeContainer();
@@ -161,9 +130,15 @@
 			}
 		}, false );
 
-		resizeContainer();
+		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
+		menuLayer.style( { 'border' : '5px solid green' } );
+		innerLayer.style( { 'border' : '5px solid brown' } );
+		view.style( { 'border': '5px solid yellow' } );
+		add.style( { 'border': '5px solid hotpink' } );
 
-		// $util.ajax( 'test', 'POST', { 'a' : 1, 'b' : 2, 'c' : 3 }, function( $result ) { alert( $result.message + '[' + $result.code + ']' ); console.log( $result ); } );
+		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );
+
+		resizeContainer();
 	};
 
 	var completedDOM = function() {

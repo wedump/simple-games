@@ -28,6 +28,25 @@ var $layer = ( function() {
 			return this;
 		},
 
+		out : function( $target ) {
+			var layers = [];
+
+			if ( $target instanceof Array )
+				layers = $target;
+			else
+				layers.push( $target );
+
+			for ( var i = layers.length - 1; i >= 0; i-- ) {
+				var layer = layers[ i ];
+				
+				this.element.removeChild( layer.element );
+				this.children.splice( this.children.indexOf( layer ), 1 );
+				layer.parent = null;
+			}
+
+			return this;
+		},
+
 		start : function( $x, $y ) {
 			this._s_position.x = $x;
 			this._s_position.y = $y;

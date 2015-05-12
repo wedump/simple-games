@@ -182,6 +182,15 @@ var $layer = ( function() {
 			this._intervalY = $intervalY;
 
 			return this;
+		},
+
+		attr : function( $attr, $value ) {
+			if ( !$value ) // getter
+				return this.element[ $attr ];
+
+			// setter
+			this.element[ $attr ] = $value;
+			return this;
 		}
 	};
 

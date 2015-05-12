@@ -1,11 +1,6 @@
 ( function() {
 	'use strict';
 	
-	/**	
-	 	1. 팝업 닫기
-		2. 플러스 버튼 만들고, 입력 팝업 만들고, 서버 저장 개발
-	**/
-
 	var simpleGames = function() {
 		var currentIcon,
 			
@@ -27,6 +22,7 @@
 			mainLayer  = $layer(),
 			menuLayer  = $layer(),
 			innerLayer = $layer(),
+			plusButton = $layer(),
 			view	   = $layer( 'view' ).start( 0, 0 ).scale( 10, 10 ).hide(),
 			add 	   = $layer( 'add' ).start( 0, 0 ).scale( 10, 10 ).hide();
 
@@ -42,6 +38,7 @@
 
 				innerLayer.start( innerLayerStart.w, innerLayerStart.h ).scale( innerLayerScale.w, innerLayerScale.h );
 				menuLayer.start( menuLayerStart.w, menuLayerStart.h ).scale( menuLayerScale.w, menuLayerScale.h );
+				plusButton.start( 0, 0 );
 			} else {
 				if ( innerLayer.visible() )
 					mainLayer.start( mainLayerStart.h, mainLayerStart.w ).scale( mainLayerSmallScale.h, mainLayerSmallScale.w );
@@ -50,6 +47,7 @@
 
 				innerLayer.start( innerLayerStart.h, innerLayerStart.w ).scale( innerLayerScale.h, innerLayerScale.w );
 				menuLayer.start( menuLayerStart.h, menuLayerStart.w ).scale( menuLayerScale.h, menuLayerScale.w );
+				plusButton.start( 8.5, 0 );
 			}
 
 			container.style( {
@@ -57,6 +55,8 @@
 				'width'  : clientWidth  - 10 + 'px',
 				'height' : clientHeight - 10 + 'px'
 			} );
+
+			plusButton.shape( 'circle' );
 
 			deployIcon();
 		}
@@ -78,8 +78,7 @@
 				wIconBlank = ( mainLayerWidth - ( iconBlockSize * wIconCount - iconMargin ) ) / 2,
 				hIconBlank = ( mainLayerHeight - ( ( iconBlockSize + hCorrectMargin + labelSize ) * hIconCount - ( iconMargin + hCorrectMargin ) ) ) / 2;
 			
-			mainLayer.out( mainLayer.children );
-			mainLayer.interval( mainLayerWidth, mainLayerHeight );
+			mainLayer.out( mainLayer.children ).interval( mainLayerWidth, mainLayerHeight );
 
 			roof:
 			for ( var page = 0; page < totalPage; page++ )
@@ -88,15 +87,12 @@
 						if ( !data[ page * iconCountPerPage + h * wIconCount + w ] )
 							break roof;
 
-						var icon = $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
-										   .shape( 'rounded' )
-										   .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
-										   .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
-										   .event( 'click', $util.fn( onClickIcon, null, [ view ] ) );
-
-						icon.element.id = icon._label.childNodes[ 0 ].nodeValue;
-
-						mainLayer.in( icon );
+						mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
+											  .shape( 'rounded' )
+											  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
+											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
+											  .event( 'click', $util.fn( onClickIcon, null, [ view ] ) )
+											  .attr( 'id','game' + data[ page * iconCountPerPage + h * wIconCount + w ] ) );
 
 						if ( page === totalPage - 1 && w === wIconCount - 1 )
 							$util.style( mainLayer.children[ mainLayer.children.length - 1 ].element.querySelector( 'label' ), { 'width' : iconSize + wIconBlank + iconBorder / 2 + 'px', 'text-align' : 'left' } );
@@ -104,40 +100,44 @@
 		}
 
 		function onClickIcon( $contents, $event ) {
-			var isVisible = innerLayer.visible(),
-				scrollLeft = mainLayer.element.scrollLeft;
+			var isVisible  = innerLayer.visible(),
+				oldScrollLeft = mainLayer.element.scrollLeft;
 
+			if ( isVisible && currentIcon === $event.target.id )
+				innerLayer.out( innerLayer.children ).hide();
+			else
+				innerLayer.out( innerLayer.children ).in( $contents.show() ).show();
+			
+			resizeContainer();
 			currentIcon = $event.target.id;
 
-			innerLayer.in( $contents.show() );
-			innerLayer.show();
-			resizeContainer();
+			if ( isVisible || currentIcon.indexOf( 'Button' ) > -1 )
+				mainLayer.element.scrollLeft = oldScrollLeft;
+			else
+				retainIconPosition()
+		}
 
-			if ( isVisible ) {
-				mainLayer.element.scrollLeft = scrollLeft;
-			} else {
-				$util.hash( currentIcon );
+		function retainIconPosition() {
+			$util.hash( currentIcon );
+
+			if ( mainLayer.element.scrollLeft != 0 )
 				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - ( iconSize + iconBorder ) / 2;
-			}
 		}
 
 		window.addEventListener( 'resize', function() {
 			resizeContainer();
-
-			if ( currentIcon ) {
-				$util.hash( currentIcon );
-				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - ( iconSize + iconBorder ) / 2;
-			}
+			if ( currentIcon ) retainIconPosition()
 		}, false );
 
 		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
 		menuLayer.style( { 'border' : '5px solid green' } );
 		innerLayer.style( { 'border' : '5px solid brown' } );
+		plusButton.style( { 'border' : '5px solid green', 'width' : '40px', 'height' : '40px' } );
 		view.style( { 'border': '5px solid yellow' } );
 		add.style( { 'border': '5px solid hotpink' } );
 
-		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer );
-
+		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer.in( plusButton ) );
+		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ add ] ) ).attr( 'id', 'plusButton' );
 		resizeContainer();
 	};
 

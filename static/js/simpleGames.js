@@ -21,10 +21,10 @@
 			container  = $layer( 'container' ),
 			mainLayer  = $layer(),
 			menuLayer  = $layer(),
-			innerLayer = $layer(),
+			innerLayer = $layer().hide(),
 			plusButton = $layer(),
-			view	   = $layer( 'view' ).start( 0, 0 ).scale( 10, 10 ).hide(),
-			add 	   = $layer( 'add' ).start( 0, 0 ).scale( 10, 10 ).hide();
+			infoView   = $layer( 'infoView' ).start( 0, 0 ).scale( 10, 10 ).hide(),
+			plusView   = $layer( 'plusView' ).start( 0, 0 ).scale( 10, 10 ).hide();
 
 		function resizeContainer() {
 			var clientWidth  = $util.clientSize().width,
@@ -50,8 +50,7 @@
 				plusButton.start( 8.5, 0 );
 			}
 
-			container.style( {
-				'border' : '5px solid red',
+			container.style( {				
 				'width'  : clientWidth  - 10 + 'px',
 				'height' : clientHeight - 10 + 'px'
 			} );
@@ -91,7 +90,7 @@
 											  .shape( 'rounded' )
 											  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
 											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
-											  .event( 'click', $util.fn( onClickIcon, null, [ view ] ) )
+											  .event( 'click', $util.fn( onClickIcon, null, [ infoView ] ) )
 											  .attr( 'id','game' + data[ page * iconCountPerPage + h * wIconCount + w ] ) );
 
 						if ( page === totalPage - 1 && w === wIconCount - 1 )
@@ -129,15 +128,18 @@
 			if ( currentIcon ) retainIconPosition()
 		}, false );
 
+		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ plusView ] ) ).attr( 'id', 'plusButton' );
+
+		container.style( { 'border' : '5px solid red' } );
 		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
 		menuLayer.style( { 'border' : '5px solid green' } );
 		innerLayer.style( { 'border' : '5px solid brown' } );
 		plusButton.style( { 'border' : '5px solid green', 'width' : '40px', 'height' : '40px' } );
-		view.style( { 'border': '5px solid yellow' } );
-		add.style( { 'border': '5px solid hotpink' } );
+		infoView.style( { 'border': '5px solid yellow' } );
+		plusView.style( { 'border': '5px solid hotpink' } );
 
-		container.in( mainLayer ).in( innerLayer.hide() ).in( menuLayer.in( plusButton ) );
-		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ add ] ) ).attr( 'id', 'plusButton' );
+		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
+		
 		resizeContainer();
 	};
 

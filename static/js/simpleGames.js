@@ -10,6 +10,9 @@
 			labelSize  = 14,
 			hCorrectMargin = -10,
 
+			popupElMargin = 10,
+			popupElBorder = 6,
+
 			mainLayerStart		= { 'w' : 0, 'h' : 0 },
 			mainLayerSmallScale = { 'w' : 4, 'h' : 10 },
 			mainLayerBigScale	= { 'w' : 9, 'h' : 10 },
@@ -105,7 +108,7 @@
 			if ( isVisible && currentIcon === $event.target.id )
 				innerLayer.out( innerLayer.children ).hide();
 			else
-				innerLayer.out( innerLayer.children ).in( $contents.show() ).show();
+				innerLayer.out( innerLayer.children ).in( $contents.show( 'table-cell' ) ).show();
 			
 			resizeContainer();
 			currentIcon = $event.target.id;
@@ -113,7 +116,9 @@
 			if ( isVisible || currentIcon.indexOf( 'Button' ) > -1 )
 				mainLayer.element.scrollLeft = oldScrollLeft;
 			else
-				retainIconPosition()
+				retainIconPosition();
+
+			deployPopupElHeight( $contents );
 		}
 
 		function retainIconPosition() {
@@ -121,6 +126,16 @@
 
 			if ( mainLayer.element.scrollLeft != 0 )
 				mainLayer.element.scrollLeft += $util.number( mainLayer.style().width ) / 2 - ( iconSize + iconBorder ) / 2;
+		}
+
+		function deployPopupElHeight( $layer ) {
+			var form     = $layer.element.children[ 0 ],
+				elCount  = form.children.length,
+				elWidth  = $util.number( $layer.style().width ) - ( popupElMargin + popupElBorder ) * 2,
+				elHeight = ( $util.number( $layer.style().height ) - ( elCount - 1 + 2 ) * ( popupElMargin + popupElBorder ) ) / elCount;
+
+			for ( var i = 0; i < form.children.length; i++ )
+				$util.style( form.children.item( i ), { 'width' : elWidth + 'px', 'height' : elHeight + 'px' } );
 		}
 
 		window.addEventListener( 'resize', function() {
@@ -136,11 +151,15 @@
 		innerLayer.style( { 'border' : '5px solid brown' } );
 		plusButton.style( { 'border' : '5px solid green', 'width' : '40px', 'height' : '40px' } );
 		infoView.style( { 'border': '5px solid yellow' } );
-		plusView.style( { 'border': '5px solid hotpink' } );
+		plusView.style( { 'border': '5px solid hotpink', 'position' : '' } );
 
 		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
 		
 		resizeContainer();
+
+		document.getElementById( 'registerBtn' ).addEventListener( 'click', function( $event ) {
+			$util.ajax( '/test', 'POST', document.getElementsByName('iconImage')[0].files[0], function( $result ) { alert( 'success' ); } );
+		}, false );
 	};
 
 	var completedDOM = function() {

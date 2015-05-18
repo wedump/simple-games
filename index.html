@@ -9,20 +9,41 @@
 		<script type='text/javascript' src='static/js/simpleGames.js'></script>
 		<style type="text/css">
 			html, body { width: 100%; height: 100%; margin: 0; }
-			.popup { text-align:center; vertical-align:middle; display:table-cell; }
-			.popup form { display:inline-block; }
-			.popup input, textarea { width: 90%; border: 3px solid gray; }
+			.popup { text-align: center; vertical-align: middle; }
+			.popup form { display: inline-block; }
+			.popup input, textarea { border: 3px solid gray; margin: 5px 0px 5px 0px; }
 		</style>
 	</head>
 	<body id="container"></body>
 	<div id="infoView" class="popup"></div>
-	<div id="plusView" class="popup">		
-		<form action="" method="post" enctype="multipart/form-data">
-			<input name="link" type="text"/><br/>
+	<div id="plusView" class="popup">
+		<form id="plusForm" action="" method="post" enctype="multipart/form-data">
+			<input name="link" type="text"/>
 			<textarea name="introText"></textarea>
-			<input id="iconImage" type="file">
-			<input id="introImage" type="file" multiple><br/>
-			<input type="submit" value="등록"/>
+			<input name="iconImage" type="file">
+			<input name="introImage" type="file" multiple>
+			<input id="registerBtn" type="button" value="등록"/>
 		</form>
 	</div>
+
+<!-- <html>
+<body>
+	<input type='file' accept='image/*' onchange='openFile(event)'><br>
+	<img id='output'>
+</body>
+<script>
+  var openFile = function(event) {
+    var input = event.target;
+
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataURL = reader.result;
+      var output = document.getElementById('output');
+      output.src = dataURL;
+    };
+    reader.readAsDataURL(input.files[0]);
+  };
+</script>
+</html> -->
+		
 </html>

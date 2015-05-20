@@ -17,33 +17,12 @@
 	<body id="container"></body>
 	<div id="infoView" class="popup"></div>
 	<div id="plusView" class="popup">
-		<form id="plusForm" action="" method="post" enctype="multipart/form-data">
+		<form>
 			<input name="link" type="text"/>
 			<textarea name="introText"></textarea>
 			<input name="iconImage" type="file">
 			<input name="introImage" type="file" multiple>
 			<input id="registerBtn" type="button" value="등록"/>
 		</form>
-	</div>
-
-<!-- <html>
-<body>
-	<input type='file' accept='image/*' onchange='openFile(event)'><br>
-	<img id='output'>
-</body>
-<script>
-  var openFile = function(event) {
-    var input = event.target;
-
-    var reader = new FileReader();
-    reader.onload = function(){
-      var dataURL = reader.result;
-      var output = document.getElementById('output');
-      output.src = dataURL;
-    };
-    reader.readAsDataURL(input.files[0]);
-  };
-</script>
-</html> -->
-		
+	</div>		
 </html>

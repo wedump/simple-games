@@ -145,6 +145,32 @@
 
 		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ plusView ] ) ).attr( 'id', 'plusButton' );
 
+		document.getElementById( 'registerBtn' ).addEventListener( 'click', function( $event ) {
+			var form = plusView.element.querySelector( 'form' ),
+				fileReader = new FileReader,
+				intorImageFiles = form.querySelector( '[name="introImage"]' ).files,
+				parameters = {
+					'link' : form.querySelector( '[name="link"]' ).value,
+					'introText' : form.querySelector( '[name="introText"]' ).value,
+					'iconImage' : []
+				};
+
+			fileReader.onload = function() {
+				console.log( fileReader.result );
+			};
+
+			fileReader.readAsDataURL( form.querySelector( '[name="iconImage"]' ).files[ 0 ] );
+			parameters.introImage = fileReader.result;
+			
+			for ( var i = 0; i < intorImageFiles.length; i++ ) {
+				fileReader = new FileReader;
+				fileReader.readAsDataURL( intorImageFiles[ i ] );
+				parameters.iconImage[ parameters.iconImage.length ] = fileReader.result;
+			}
+
+			$util.ajax( '/test', 'POST', parameters, function( $result ) { alert( 'success' ); } );
+		}, false );
+
 		container.style( { 'border' : '5px solid red' } );
 		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
 		menuLayer.style( { 'border' : '5px solid green' } );
@@ -155,11 +181,7 @@
 
 		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
 		
-		resizeContainer();
-
-		document.getElementById( 'registerBtn' ).addEventListener( 'click', function( $event ) {
-			$util.ajax( '/test', 'POST', document.getElementsByName('iconImage')[0].files[0], function( $result ) { alert( 'success' ); } );
-		}, false );
+		resizeContainer();		
 	};
 
 	var completedDOM = function() {

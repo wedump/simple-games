@@ -56,10 +56,10 @@ var $util = ( function() {
 					}
 				};
 
-			// if ( $parameters ) {
-			// 	$parameters = encodeURIComponent( JSON.stringify( $parameters ) );
-			// 	if ( $method === "GET" ) $url += "?parameters=" + $parameters;
-			// }
+			if ( $parameters ) {
+				$parameters = encodeURIComponent( JSON.stringify( $parameters ) );
+				if ( $method === "GET" ) $url += "?parameters=" + $parameters;
+			}
 
 			httpRequest.open( $method, $url, true );
 			httpRequest.setRequestHeader( 'Content-Type', 'application/json' );

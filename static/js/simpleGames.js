@@ -146,8 +146,10 @@
 		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ plusView ] ) ).attr( 'id', 'plusButton' );
 
 		document.getElementById( 'registerBtn' ).addEventListener( 'click', function( $event ) {
-			var form = plusView.element.querySelector( 'form' ),
+			var i = 0,
+				form = plusView.element.querySelector( 'form' ),
 				fileReader = new FileReader,
+				iconImageFiles = form.querySelector( '[name="iconImage"]' ).files,
 				intorImageFiles = form.querySelector( '[name="introImage"]' ).files,
 				parameters = {
 					'link' : form.querySelector( '[name="link"]' ).value,
@@ -155,20 +157,45 @@
 					'iconImage' : []
 				};
 
-			fileReader.onload = function() {
-				console.log( fileReader.result );
-			};
-
-			fileReader.readAsDataURL( form.querySelector( '[name="iconImage"]' ).files[ 0 ] );
-			parameters.introImage = fileReader.result;
-			
-			for ( var i = 0; i < intorImageFiles.length; i++ ) {
-				fileReader = new FileReader;
-				fileReader.readAsDataURL( intorImageFiles[ i ] );
-				parameters.iconImage[ parameters.iconImage.length ] = fileReader.result;
+			function onloadIntroFileReader() {
+				parameters.introImage = fileReader.result;
+				readIconFile();
 			}
 
-			$util.ajax( '/test', 'POST', parameters, function( $result ) { alert( 'success' ); } );
+			function onloadIconFileReader() {
+				parameters.iconImage[ parameters.iconImage.length ] = fileReader.result;
+				readIconFile();
+			}
+
+			function readIconFile() {				
+				if ( i < intorImageFiles.length ) {
+					fileReader = new FileReader;
+					fileReader.onload = onloadIconFileReader;
+					fileReader.readAsDataURL( intorImageFiles[ i++ ] );					
+				} else {
+					$util.ajax( '/register', 'POST', parameters, function( $result ) { alert( 'success' ); } );
+				}
+			}
+
+			if ( !parameters.link ) {
+				alert( 'Please input link.' );
+				return;
+			}
+			if ( !parameters.introText ) {
+				alert( 'Please input introText.' );
+				return;
+			}
+			if ( !iconImageFiles.value ) {
+				alert( 'Please input iconImage.' );
+				return;
+			}
+			if ( !intorImageFiles.value ) {
+				alert( 'Please input intorImages.' );
+				return;
+			}
+
+			fileReader.onload = onloadIntroFileReader;
+			fileReader.readAsDataURL( iconImageFiles[ 0 ] );
 		}, false );
 
 		container.style( { 'border' : '5px solid red' } );

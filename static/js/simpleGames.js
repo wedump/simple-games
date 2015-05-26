@@ -150,28 +150,28 @@
 				form = plusView.element.querySelector( 'form' ),
 				fileReader = new FileReader,
 				iconImageFiles = form.querySelector( '[name="iconImage"]' ).files,
-				intorImageFiles = form.querySelector( '[name="introImage"]' ).files,
+				introImageFiles = form.querySelector( '[name="introImage"]' ).files,
 				parameters = {
 					'link' : form.querySelector( '[name="link"]' ).value,
 					'introText' : form.querySelector( '[name="introText"]' ).value,
-					'iconImage' : []
+					'introImage' : []
 				};
 
-			function onloadIntroFileReader() {
-				parameters.introImage = fileReader.result;
-				readIconFile();
+			function onloadIconFileReader() {				
+				parameters.iconImage = fileReader.result;
+				readIntroFile();
 			}
 
-			function onloadIconFileReader() {
-				parameters.iconImage[ parameters.iconImage.length ] = fileReader.result;
-				readIconFile();
+			function onloadIntroFileReader() {				
+				parameters.introImage[ parameters.introImage.length ] = fileReader.result;
+				readIntroFile();
 			}
 
-			function readIconFile() {				
-				if ( i < intorImageFiles.length ) {
-					fileReader = new FileReader;
-					fileReader.onload = onloadIconFileReader;
-					fileReader.readAsDataURL( intorImageFiles[ i++ ] );					
+			function readIntroFile() {				
+				if ( i < introImageFiles.length ) {					
+					fileReader = new FileReader;					
+					fileReader.addEventListener( 'loadend', onloadIntroFileReader, false );					
+					fileReader.readAsDataURL( introImageFiles[ i++ ] );
 				} else {
 					$util.ajax( '/register', 'POST', parameters, function( $result ) { alert( 'success' ); } );
 				}
@@ -185,16 +185,16 @@
 				alert( 'Please input introText.' );
 				return;
 			}
-			if ( !iconImageFiles.value ) {
+			if ( iconImageFiles.length < 1 ) {
 				alert( 'Please input iconImage.' );
 				return;
 			}
-			if ( !intorImageFiles.value ) {
+			if ( introImageFiles.length < 1 ) {
 				alert( 'Please input intorImages.' );
 				return;
 			}
 
-			fileReader.onload = onloadIntroFileReader;
+			fileReader.addEventListener( 'loadend', onloadIconFileReader, false );
 			fileReader.readAsDataURL( iconImageFiles[ 0 ] );
 		}, false );
 
@@ -208,7 +208,7 @@
 
 		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
 		
-		resizeContainer();		
+		resizeContainer();
 	};
 
 	var completedDOM = function() {

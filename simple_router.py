@@ -5,6 +5,8 @@ from io import StringIO
 from importlib import import_module
 import sys
 
+sys.path.append( './' )
+
 base_package = 'cgi-bin'
 default_page = 'index.html'
 encoding = 'utf-8'

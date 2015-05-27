@@ -150,11 +150,11 @@
 				form = plusView.element.querySelector( 'form' ),
 				fileReader = new FileReader,
 				iconImageFiles = form.querySelector( '[name="iconImage"]' ).files,
-				introImageFiles = form.querySelector( '[name="introImage"]' ).files,
+				introImageFiles = form.querySelector( '[name="introImages"]' ).files,
 				parameters = {
 					'link' : form.querySelector( '[name="link"]' ).value,
 					'introText' : form.querySelector( '[name="introText"]' ).value,
-					'introImage' : []
+					'introImages' : []
 				};
 
 			function onloadIconFileReader() {				
@@ -163,7 +163,7 @@
 			}
 
 			function onloadIntroFileReader() {				
-				parameters.introImage[ parameters.introImage.length ] = fileReader.result;
+				parameters.introImages[ parameters.introImages.length ] = fileReader.result;
 				readIntroFile();
 			}
 

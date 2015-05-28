@@ -1,25 +1,25 @@
 #!/usr/bin/python3
 
-import sqlite3
+import sqlite3, sys
 
 def execute( query, parameters = None ):
-	connection = sqlite3.connect( 'simpledb.sqlite' )
+	connection = sqlite3.connect( 'db/simpledb.sqlite' )
 	cursor = connection.cursor()
 
 	if parameters is None:
 		result = cursor.execute( query )
-	else
+	else:
 		for key in parameters.keys():
 			value = parameters[ key ]
 
 			if type( value ) == str:
 				value = "'" + value + "'"
 
-			query = query.replace( '${' + key + '}', value )
+			query = query.replace( '${' + str( key ) + '}', str( value ) )
 
 		cursor.execute( query, parameters )
-		result = cursor.fetchall()
-
+	
+	result = cursor.fetchall()
 	connection.commit()
 	connection.close()
 
@@ -37,18 +37,21 @@ CREATE_TABLE_GAME = """
 """
 
 CREATE_TABLE_INTROIMAGE = """
-	CREATE TABLE introimage (
+	CREATE TABLE introImage (
 		gameId INTEGER NOT NULL,
 		image TEXT NOT NULL,
-		order INTEGER NOT NULL
+		orderSeq INTEGER NOT NULL
 	)
 """
 
-INSERT_GAME = """
-	INSERT INTO game ( name, link, introText, iconImage, regDateTime ) VALUES ( ${name}, ${link}, ${introText}, ${iconImage}, datetime() );
+SELECT_MAX_GAME_ID = """
 	SELECT MAX( id ) FROM game
 """
 
+INSERT_GAME = """
+	INSERT INTO game ( name, link, introText, iconImage, regDateTime ) VALUES ( ${name}, ${link}, ${introText}, ${iconImage}, datetime() )	
+"""
+
 INSERT_INTROIMAGE = """
-	INSERT INTO introimage ( gameId, image, order ) VALUES ( ${gameId}, ${image}, ${order} )
+	INSERT INTO introImage ( gameId, image, orderSeq ) VALUES ( ${gameId}, ${image}, ${orderSeq} )
 """

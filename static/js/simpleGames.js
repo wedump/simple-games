@@ -152,6 +152,7 @@
 				iconImageFiles = form.querySelector( '[name="iconImage"]' ).files,
 				introImageFiles = form.querySelector( '[name="introImages"]' ).files,
 				parameters = {
+					'name' : form.querySelector( '[name="name"]' ).value,
 					'link' : form.querySelector( '[name="link"]' ).value,
 					'introText' : form.querySelector( '[name="introText"]' ).value,
 					'introImages' : []
@@ -175,6 +176,11 @@
 				} else {
 					$util.ajax( '/register', 'POST', parameters, function( $result ) { alert( 'success' ); } );
 				}
+			}
+
+			if ( !parameters.name ) {
+				alert( 'Please input name.' );
+				return;
 			}
 
 			if ( !parameters.link ) {

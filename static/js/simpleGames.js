@@ -142,13 +142,14 @@
 
 		function setInfoView() {
 			$util.ajax( '/detail', 'GET', { 'id' : currentIcon }, function( $result ) {
-				// document.getElementById( 'downloadBtn' ).addEventListener( 'click',	function() {
-				// }, false );
+				document.getElementById( 'downloadBtn' ).onclick = function( $event ) {
+					window.open( $result.link );
+				};
 				
 				infoView.element.querySelector( '[name="introText"]' ).textContent = $result.introText;
 
 				var introImages = document.getElementById( 'introImages' );
-				//$util.style( introImages, { 'overflow-x' : 'auto' } );
+				$util.style( introImages, { 'overflow-x' : 'auto', 'white-space' : 'nowrap' } );
 				introImages.innerHTML = '';
 
 				for ( var i in $result.introImages ) {
@@ -160,8 +161,7 @@
 						'background-image' : 'url("' + $result.introImages[ i ].image + '")',
 						'background-size' : '100% 100%',
 						'background-repeat' : 'no-repeat',
-						'display' : 'inline-block',
-						'float' : 'left'
+						'display' : 'inline-block'						
 					} );
 
 					introImages.appendChild( div );

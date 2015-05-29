@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import json, time
+import json
 from db import dbms
 
 def process( request, response ):

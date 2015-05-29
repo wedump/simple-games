@@ -64,41 +64,40 @@
 		}
 
 		function deployIcon() {
-			// test data
-			var data = [
-				'01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28',
-				'29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53'
-			];
+			$util.ajax( '/icon', 'GET', null, function( $result ) {
+				var data = $result,
+					iconBlockSize   = iconSize + iconBorder + iconMargin,
+					mainLayerWidth  = $util.number( mainLayer.style().width ),
+					mainLayerHeight = $util.number( mainLayer.style().height ),
+					wIconCount = parseInt( mainLayerWidth / iconBlockSize ),
+					hIconCount = parseInt( mainLayerHeight / ( iconBlockSize + hCorrectMargin + labelSize ) ),
+					iconCountPerPage = wIconCount * hIconCount,
+					totalPage  = Math.ceil( data.length / iconCountPerPage ),
+					wIconBlank = ( mainLayerWidth - ( iconBlockSize * wIconCount - iconMargin ) ) / 2,
+					hIconBlank = ( mainLayerHeight - ( ( iconBlockSize + hCorrectMargin + labelSize ) * hIconCount - ( iconMargin + hCorrectMargin ) ) ) / 2;
+				
+				mainLayer.out( mainLayer.children ).interval( mainLayerWidth, mainLayerHeight );
 
-			var iconBlockSize   = iconSize + iconBorder + iconMargin,
-				mainLayerWidth  = $util.number( mainLayer.style().width ),
-				mainLayerHeight = $util.number( mainLayer.style().height ),
-				wIconCount = parseInt( mainLayerWidth / iconBlockSize ),
-				hIconCount = parseInt( mainLayerHeight / ( iconBlockSize + hCorrectMargin + labelSize ) ),
-				iconCountPerPage = wIconCount * hIconCount,
-				totalPage = Math.ceil( data.length / iconCountPerPage ),
-				wIconBlank = ( mainLayerWidth - ( iconBlockSize * wIconCount - iconMargin ) ) / 2,
-				hIconBlank = ( mainLayerHeight - ( ( iconBlockSize + hCorrectMargin + labelSize ) * hIconCount - ( iconMargin + hCorrectMargin ) ) ) / 2;
-			
-			mainLayer.out( mainLayer.children ).interval( mainLayerWidth, mainLayerHeight );
+				roof:
+				for ( var page = 0; page < totalPage; page++ )
+					for ( var h = 0; h < hIconCount; h++ )
+						for ( var w = 0; w < wIconCount; w++ ) {
+							var icon = data[ page * iconCountPerPage + h * wIconCount + w ];
+							
+							if ( !icon ) break roof;
 
-			roof:
-			for ( var page = 0; page < totalPage; page++ )
-				for ( var h = 0; h < hIconCount; h++ )
-					for ( var w = 0; w < wIconCount; w++ ) {
-						if ( !data[ page * iconCountPerPage + h * wIconCount + w ] )
-							break roof;
+							mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
+												  .shape( 'rounded' )
+												  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
+												  .label( icon.name, labelSize + 'px' )
+												  .event( 'click', $util.fn( onClickIcon, null, [ infoView ] ) )
+												  .attr( 'id', icon.id )
+												  .image( icon.iconImage ) );
 
-						mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
-											  .shape( 'rounded' )
-											  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
-											  .label( 'game' + data[ page * iconCountPerPage + h * wIconCount + w ], labelSize + 'px' )
-											  .event( 'click', $util.fn( onClickIcon, null, [ infoView ] ) )
-											  .attr( 'id','game' + data[ page * iconCountPerPage + h * wIconCount + w ] ) );
-
-						if ( page === totalPage - 1 && w === wIconCount - 1 )
-							$util.style( mainLayer.children[ mainLayer.children.length - 1 ].element.querySelector( 'label' ), { 'width' : iconSize + wIconBlank + iconBorder / 2 + 'px', 'text-align' : 'left' } );
-					}
+							if ( page === totalPage - 1 && w === wIconCount - 1 )
+								$util.style( mainLayer.children[ mainLayer.children.length - 1 ].element.querySelector( 'label' ), { 'width' : iconSize + wIconBlank + iconBorder / 2 + 'px', 'text-align' : 'left' } );
+						}
+			} );
 		}
 
 		function onClickIcon( $contents, $event ) {
@@ -119,6 +118,9 @@
 				retainIconPosition();
 
 			deployPopupElHeight( $contents );
+			
+			if ( !isVisible && $contents === infoView )
+				setInfoView();
 		}
 
 		function retainIconPosition() {
@@ -138,12 +140,41 @@
 				$util.style( form.children.item( i ), { 'width' : elWidth + 'px', 'height' : elHeight + 'px' } );
 		}
 
+		function setInfoView() {
+			$util.ajax( '/detail', 'GET', { 'id' : currentIcon }, function( $result ) {
+				// document.getElementById( 'downloadBtn' ).addEventListener( 'click',	function() {
+				// }, false );
+				
+				infoView.element.querySelector( '[name="introText"]' ).textContent = $result.introText;
+
+				var introImages = document.getElementById( 'introImages' );
+				//$util.style( introImages, { 'overflow-x' : 'auto' } );
+				introImages.innerHTML = '';
+
+				for ( var i in $result.introImages ) {
+					var div = document.createElement( 'DIV' );
+					
+					$util.style( div, {
+						'width' : $util.style( introImages ).width,
+						'height' : $util.style( introImages ).height,
+						'background-image' : 'url("' + $result.introImages[ i ].image + '")',
+						'background-size' : '100% 100%',
+						'background-repeat' : 'no-repeat',
+						'display' : 'inline-block',
+						'float' : 'left'
+					} );
+
+					introImages.appendChild( div );
+				}
+			} );
+		}
+
 		window.addEventListener( 'resize', function() {
 			resizeContainer();
 			if ( currentIcon ) retainIconPosition()
 		}, false );
 
-		plusButton.event( 'click',  $util.fn( onClickIcon, null, [ plusView ] ) ).attr( 'id', 'plusButton' );
+		plusButton.event( 'click', $util.fn( onClickIcon, null, [ plusView ] ) ).attr( 'id', 'plusButton' );
 
 		document.getElementById( 'registerBtn' ).addEventListener( 'click', function( $event ) {
 			var i = 0,
@@ -174,8 +205,23 @@
 					fileReader.addEventListener( 'loadend', onloadIntroFileReader, false );					
 					fileReader.readAsDataURL( introImageFiles[ i++ ] );
 				} else {
-					$util.ajax( '/register', 'POST', parameters, function( $result ) { alert( 'success' ); } );
+					$util.ajax( '/register', 'POST', parameters, callbackByRegister );
 				}
+			}
+
+			function callbackByRegister( $result ) {
+				if ( $result.code != 0 ) {
+					alert( 'Failed register.' );
+					return;
+				}
+
+				form.querySelector( '[name="name"]' ).value = '';
+				form.querySelector( '[name="link"]' ).value = '';
+				form.querySelector( '[name="introText"]' ).value = '';
+				form.querySelector( '[name="iconImage"]' ).value = '';
+				form.querySelector( '[name="introImages"]' ).value = '';
+
+				plusButton.dispatchEvent( 'click' );
 			}
 
 			if ( !parameters.name ) {

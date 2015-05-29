@@ -17,6 +17,9 @@ class SimpleRequestHandler( WSGIRequestHandler ):
 		if self.command == 'GET':
 			for item in environ.get( 'QUERY_STRING' ).split( '&' ):
 				if item: request_payload[ item.split( '=' )[ 0 ] ] = item.split( '=' )[ 1 ]
+
+			if 'parameters' in request_payload:
+				request_payload = json.loads( urllib.parse.unquote( request_payload[ 'parameters' ] ) )
 		elif self.command == 'POST':
 			length = int( self.headers.get( 'content-length' ) )
 			

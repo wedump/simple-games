@@ -2,13 +2,20 @@
 
 import sqlite3, sys
 
+def dict_factory( cursor, row ):
+	result = {}
+	
+	for index, column in enumerate( cursor.description ):
+		result[ column[ 0 ] ] = row[ index ]
+	
+	return result
+
 def execute( query, parameters = None ):
 	connection = sqlite3.connect( 'db/simpledb.sqlite' )
+	connection.row_factory = dict_factory
 	cursor = connection.cursor()
 
-	if parameters is None:
-		result = cursor.execute( query )
-	else:
+	if parameters is not None:
 		for key in parameters.keys():
 			value = parameters[ key ]
 
@@ -17,9 +24,9 @@ def execute( query, parameters = None ):
 
 			query = query.replace( '${' + str( key ) + '}', str( value ) )
 
-		cursor.execute( query, parameters )
-	
+	cursor.execute( query )	
 	result = cursor.fetchall()
+	
 	connection.commit()
 	connection.close()
 
@@ -46,6 +53,18 @@ CREATE_TABLE_INTROIMAGE = """
 
 SELECT_MAX_GAME_ID = """
 	SELECT MAX( id ) FROM game
+"""
+
+SELECT_ICON_INFO = """
+	SELECT id, name, iconImage FROM game ORDER BY id
+"""
+
+SELECT_GAME_INFO = """
+	SELECT link, introText FROM game WHERE id = ${id}
+"""
+
+SELECT_INTRO_IMAGE = """
+	SELECT image FROM introImage WHERE gameId = ${id}
 """
 
 INSERT_GAME = """

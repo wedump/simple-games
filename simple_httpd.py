@@ -5,6 +5,7 @@ from wsgiref.simple_server import make_server, WSGIServer, WSGIRequestHandler
 from socketserver import ThreadingMixIn
 
 encoding = 'utf-8'
+log_file = open( 'log/simple.log', 'a' )
 
 class ThreadedWSGIServer( ThreadingMixIn, WSGIServer ):
 	pass
@@ -30,10 +31,14 @@ class SimpleRequestHandler( WSGIRequestHandler ):
 
 		return environ
 
+	def log_message( self, format, *args ):
+		log_file.write( '%s - - [%s] %s\n' % ( self.address_string(), self.log_date_time_string(), format%args ) )
+
 try:
 	httpd = make_server( '', 8000, simple_router.route, ThreadedWSGIServer, SimpleRequestHandler )
 	print( 'Starting simple_httpd on port ' + str( httpd.server_port ) )
 	httpd.serve_forever()
 except KeyboardInterrupt:
 	print( 'Shutting down simple_httpd' )
+	log_file.close()
 	httpd.socket.close()

@@ -1,0 +1,9 @@
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET / HTTP/1.1" 200 1343
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET /static/js/simpleUtils.js HTTP/1.1" 200 2302
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET /static/js/simpleLayers.js HTTP/1.1" 200 4729
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET /static/js/simpleGames.js HTTP/1.1" 200 10075
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET /icon HTTP/1.1" 200 15469
+127.0.0.1 - - [01/Jun/2015 14:09:56] "GET /favicon.ico HTTP/1.1" 404 0
+127.0.0.1 - - [01/Jun/2015 14:09:59] "GET /icon HTTP/1.1" 200 15469
+127.0.0.1 - - [01/Jun/2015 14:09:59] "GET /detail?parameters=%7B%22id%22%3A%225%22%7D HTTP/1.1" 200 44619
+127.0.0.1 - - [01/Jun/2015 14:10:00] "GET /icon HTTP/1.1" 200 15469

@@ -5,9 +5,9 @@
 		var currentIcon,
 			
 			iconSize   = 50,
-			iconBorder = 10,
+			iconBorder = 4,
 			iconMargin = 13,
-			labelSize  = 14,
+			labelSize  = 12,
 			hCorrectMargin = -10,
 
 			popupElMargin = 10,
@@ -15,11 +15,11 @@
 
 			mainLayerStart		= { 'w' : 0, 'h' : 0 },
 			mainLayerSmallScale = { 'w' : 4, 'h' : 10 },
-			mainLayerBigScale	= { 'w' : 9, 'h' : 10 },
+			mainLayerBigScale	= { 'w' : 8.5, 'h' : 10 },
 			innerLayerStart		= { 'w' : 4, 'h' : 0 },
-			innerLayerScale		= { 'w' : 5, 'h' : 10 },
-			menuLayerStart		= { 'w' : 9, 'h' : 0 },
-			menuLayerScale		= { 'w' : 1, 'h' : 10 },
+			innerLayerScale		= { 'w' : 4.5, 'h' : 10 },
+			menuLayerStart		= { 'w' : 8.5, 'h' : 0 },
+			menuLayerScale		= { 'w' : 1.5, 'h' : 10 },
 
 			container  = $layer( 'container' ),
 			mainLayer  = $layer(),
@@ -41,7 +41,7 @@
 
 				innerLayer.start( innerLayerStart.w, innerLayerStart.h ).scale( innerLayerScale.w, innerLayerScale.h );
 				menuLayer.start( menuLayerStart.w, menuLayerStart.h ).scale( menuLayerScale.w, menuLayerScale.h );
-				plusButton.start( 0, 0 );
+				plusButton.start( 1, 1 );
 			} else {
 				if ( innerLayer.visible() )
 					mainLayer.start( mainLayerStart.h, mainLayerStart.w ).scale( mainLayerSmallScale.h, mainLayerSmallScale.w );
@@ -50,15 +50,15 @@
 
 				innerLayer.start( innerLayerStart.h, innerLayerStart.w ).scale( innerLayerScale.h, innerLayerScale.w );
 				menuLayer.start( menuLayerStart.h, menuLayerStart.w ).scale( menuLayerScale.h, menuLayerScale.w );
-				plusButton.start( 8.5, 0 );
+				plusButton.start( 8, 1 );
 			}
 
 			container.style( {				
-				'width'  : clientWidth  - 10 + 'px',
-				'height' : clientHeight - 10 + 'px'
+				'width'  : clientWidth  + 'px',
+				'height' : clientHeight + 'px'
 			} );
 
-			plusButton.shape( 'circle' );
+			plusButton.shape( 'circle' ).button( 'plus' );
 
 			deployIcon();
 		}
@@ -88,7 +88,7 @@
 
 							mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
 												  .shape( 'rounded' )
-												  .style( { 'border' : iconBorder / 2 + 'px solid gray', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
+												  .style( { 'border' : iconBorder / 2 + 'px solid #D3D3D3', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
 												  .label( icon.name, labelSize + 'px' )
 												  .event( 'click', $util.fn( onClickIcon, null, [ infoView ] ) )
 												  .attr( 'id', icon.id )
@@ -136,8 +136,14 @@
 				elWidth  = $util.number( $layer.style().width ) - ( popupElMargin + popupElBorder ) * 2,
 				elHeight = ( $util.number( $layer.style().height ) - ( elCount - 1 + 2 ) * ( popupElMargin + popupElBorder ) ) / elCount;
 
-			for ( var i = 0; i < form.children.length; i++ )
-				$util.style( form.children.item( i ), { 'width' : elWidth + 'px', 'height' : elHeight + 'px' } );
+			for ( var i = 0; i < form.children.length; i++ ) {
+				var item = form.children.item( i );
+				
+				$util.style( item, { 'width' : elWidth + 'px' } );
+
+				if ( item.tagName !== 'DIV' )
+					$util.style( item, { 'height' : elHeight + 'px' } );
+			}
 		}
 
 		function setInfoView() {
@@ -199,7 +205,7 @@
 				readIntroFile();
 			}
 
-			function readIntroFile() {				
+			function readIntroFile() {
 				if ( i < introImageFiles.length ) {					
 					fileReader = new FileReader;					
 					fileReader.addEventListener( 'loadend', onloadIntroFileReader, false );					
@@ -249,18 +255,16 @@
 			fileReader.addEventListener( 'loadend', onloadIconFileReader, false );
 			fileReader.readAsDataURL( iconImageFiles[ 0 ] );
 		}, false );
-
-		container.style( { 'border' : '5px solid red' } );
-		mainLayer.style( { 'border' : '5px solid blue', 'overflow-x' : 'auto' } );
-		menuLayer.style( { 'border' : '5px solid green' } );
-		innerLayer.style( { 'border' : '5px solid brown' } );
-		plusButton.style( { 'border' : '5px solid green', 'width' : '40px', 'height' : '40px' } );
-		infoView.style( { 'border': '5px solid yellow' } );
-		plusView.style( { 'border': '5px solid hotpink', 'position' : '' } );
+	
+		container.style( { 'background-color' : '#D3D3D3' } );	
+		mainLayer.style( { 'overflow-x' : 'auto' } );
+		innerLayer.style( { 'border' : '2px solid #989898', 'overflow-y' : 'auto' } );
+		plusView.style( { 'position' : '' } );
+		plusButton.style( { 'background-color' : '#0F9D58', 'width' : '50px', 'height' : '50px' } );
 
 		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
 		
-		resizeContainer();
+		resizeContainer();		
 	};
 
 	var completedDOM = function() {

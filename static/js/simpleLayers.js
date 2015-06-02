@@ -191,6 +191,20 @@ var $layer = ( function() {
 			// setter
 			this.element[ $attr ] = $value;
 			return this;
+		},
+
+		button : function( $buttonType ) {
+			var buttonText = '';
+
+			switch ( $buttonType ) {
+				case 'plus':
+					buttonText = '+';
+					break;
+			}
+
+			this._label.innerHTML = '';
+			this._label.appendChild( document.createTextNode( buttonText ) );
+			$util.style( this._label, { 'color' : '#FFFFFF', 'font-size' : '20px', 'top' : $util.number( this.style().width ) / 2 / 2 + 'px' } );
 		}
 	};
 

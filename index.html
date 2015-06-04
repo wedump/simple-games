@@ -6,30 +6,31 @@
 		<title>Simple Games</title>
 		<script type='text/javascript' src='static/js/simpleUtils.js'></script>
 		<script type='text/javascript' src='static/js/simpleLayers.js'></script>
-		<script type='text/javascript' src='static/js/simpleGames.js'></script>
-		<style type="text/css">
-			html, body { width: 100%; height: 100%; margin: 0; }
-			.popup { text-align: center; vertical-align: middle; }
-			.popup form { display: inline-block; }
-			.popup input, textarea { border: 1px solid #989898; margin: 5px 0px 5px 0px; }			
-		</style>
+		<script type='text/javascript' src='static/js/simpleGames.js'></script>		
+		<link rel="stylesheet" type="text/css" href="static/css/simpleGames.css">
 	</head>
 	<body id="container"></body>
 	<div id="infoView" class="popup">
-		<form>
-			<input id="downloadBtn" type="button" value="Download"/>
-			<div id="introImages" style="border: 1px solid #989898; height: 200px;"></div>
+		<form>			
+			<div id="introImages"></div>
 			<textarea name="introText" readonly></textarea>
+			<input id="downloadBtn" type="button" value="Download"/>
 		</form>
 	</div>
 	<div id="plusView" class="popup">
-		<form>
-			<input name="name" type="text" placeholder="name"/>
-			<input name="link" type="text" placeholder="link"/>
-			<textarea name="introText" placeholder="introText"></textarea>
-			<input name="iconImage" type="file">
-			<input name="introImages" type="file" multiple>
-			<input id="registerBtn" type="button" value="Registration"/>
+		<form>			
+			<div>
+				<input name="name" type="text" placeholder="Name"/>
+				<input name="link" type="text" placeholder="Link"/>
+				<textarea name="introText" placeholder="Intro text"></textarea>
+			</div>
+			<div>
+				<font color="#FFFFFF">Icon image</font>
+				<input name="iconImage" type="file"/>
+				<font color="#FFFFFF">Intro mages</font>
+				<input name="introImages" type="file" multiple/>
+				<input id="registerBtn" type="button" value="Registration"/>
+			</div>
 		</form>
 	</div>
 </html>

@@ -93,14 +93,14 @@ var $layer = ( function() {
 			return $util.style( this.element );			
 		},
 
-		data : function( $data ) {
-			if ( $data ) { // setter
-				this._data = $data;
+		data : function( $key, $value ) {
+			if ( $value ) { // setter
+				this._data[ $key ] = $value;
 				return this;
 			}
 			
 			// getter
-			return this._data;
+			return this._data[ $key ];
 		},
 
 		image : function( $route ) {

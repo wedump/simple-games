@@ -11,7 +11,7 @@
 			hCorrectMargin = -10,
 
 			popupElMargin = 10,
-			popupElBorder = 6,
+			popupElBorder = 4,
 
 			mainLayerStart		= { 'w' : 0, 'h' : 0 },
 			mainLayerSmallScale = { 'w' : 4, 'h' : 10 },
@@ -26,8 +26,8 @@
 			menuLayer  = $layer(),
 			innerLayer = $layer().hide(),
 			plusButton = $layer(),
-			infoView   = $layer( 'infoView' ).start( 0, 0 ).scale( 10, 10 ).hide(),
-			plusView   = $layer( 'plusView' ).start( 0, 0 ).scale( 10, 10 ).hide();
+			infoView   = $layer( 'infoView' ).start( 0, 0 ).scale( 10, 10 ).data( 'orderType', 'h' ).shape( 'rounded' ).hide(),
+			plusView   = $layer( 'plusView' ).start( 0, 0 ).scale( 10, 10 ).data( 'orderType', 'h' ).shape( 'rounded' ).hide();
 
 		function resizeContainer() {
 			var clientWidth  = $util.clientSize().width,
@@ -58,7 +58,7 @@
 				'height' : clientHeight + 'px'
 			} );
 
-			plusButton.shape( 'circle' ).button( 'plus' );
+			plusButton.shape( 'circle' ).button( 'plus' );			
 
 			deployIcon();
 		}
@@ -88,7 +88,7 @@
 
 							mainLayer.in( $layer().start( page * mainLayerWidth + w * iconBlockSize + wIconBlank, h * ( iconBlockSize + hCorrectMargin + labelSize ) + hIconBlank )
 												  .shape( 'rounded' )
-												  .style( { 'border' : iconBorder / 2 + 'px solid #D3D3D3', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
+												  .style( { 'border' : iconBorder / 2 + 'px', 'width' : iconSize + 'px', 'height' : iconSize + 'px' } )
 												  .label( icon.name, labelSize + 'px' )
 												  .event( 'click', $util.fn( onClickIcon, null, [ infoView ] ) )
 												  .attr( 'id', icon.id )
@@ -131,19 +131,24 @@
 		}
 
 		function deployPopupElHeight( $layer ) {
-			var form     = $layer.element.children[ 0 ],
-				elCount  = form.children.length,
-				elWidth  = $util.number( $layer.style().width ) - ( popupElMargin + popupElBorder ) * 2,
-				elHeight = ( $util.number( $layer.style().height ) - ( elCount - 1 + 2 ) * ( popupElMargin + popupElBorder ) ) / elCount;
+			var form       = $layer.element.children[ 0 ],
+				orderWidth = $layer.data( 'orderType' ) === 'w',
+				elCount    = form.children.length,
+				elWidth    = $util.number( $layer.style().width ) - ( popupElMargin + popupElBorder ) * 2,
+				elHeight   = orderWidth
+					? ( $util.number( $layer.style().height ) - ( elCount - 1 + 2 ) * ( popupElMargin + popupElBorder ) ) / elCount
+					: $util.number( $layer.style().height ) - ( popupElMargin + popupElBorder ) * 2;					
 
 			for ( var i = 0; i < form.children.length; i++ ) {
 				var item = form.children.item( i );
-				
-				$util.style( item, { 'width' : elWidth + 'px' } );
+				$util.style( item, { 'width' : elWidth + 'px', 'height' : elHeight + 'px' } );
 
-				if ( item.tagName !== 'DIV' )
-					$util.style( item, { 'height' : elHeight + 'px' } );
+				if ( !orderWidth )
+					$util.style( item, { 'display' : 'inline-block', 'float' : 'left', 'margin-left' : popupElMargin + 'px', 'margin-top' : popupElMargin + 'px' } );
 			}
+
+			if ( !orderWidth )
+				$util.style( $layer.element.querySelector( 'form' ), { 'width' : elWidth * elCount + ( popupElMargin + popupElBorder ) * ( 2 + elCount - 1 ) + 'px' } );
 		}
 
 		function setInfoView() {
@@ -167,7 +172,8 @@
 						'background-image' : 'url("' + $result.introImages[ i ].image + '")',
 						'background-size' : '100% 100%',
 						'background-repeat' : 'no-repeat',
-						'display' : 'inline-block'						
+						'display' : 'inline-block',
+						'margin' : '0'
 					} );
 
 					introImages.appendChild( div );
@@ -255,12 +261,10 @@
 			fileReader.addEventListener( 'loadend', onloadIconFileReader, false );
 			fileReader.readAsDataURL( iconImageFiles[ 0 ] );
 		}, false );
-	
-		container.style( { 'background-color' : '#D3D3D3' } );	
+			
 		mainLayer.style( { 'overflow-x' : 'auto' } );
-		innerLayer.style( { 'border' : '2px solid #989898', 'overflow-y' : 'auto' } );
-		plusView.style( { 'position' : '' } );
-		plusButton.style( { 'background-color' : '#0F9D58', 'width' : '50px', 'height' : '50px' } );
+		innerLayer.style( { 'overflow-y' : 'auto' } );		
+		plusButton.style( { 'background-color' : '#0F9D58', 'width' : '50px', 'height' : '50px', 'box-shadow' : '2px 2px 2px silver' } );
 
 		container.in( mainLayer ).in( innerLayer ).in( menuLayer.in( plusButton ) );
 		
